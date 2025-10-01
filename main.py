@@ -2,74 +2,91 @@
 Лабораторная работа №3 по дисциплине ЛОИС
 Выполнена студентами группы 321702 Бураком Богданом Витальевичем, Семенидо Максимом Игоревичем, Мартыненко Константином Сергеевичем
 Главный файл приложения
-30.09.2025
+01.10.2025
 
 Использованные материалы:
 Голенков, В. В. Логические основы интеллектуальных систем. Практикум: учеб.-метод. пособие / В. В. Голенков. — БГУИР, 2011.
 """
 
 from fuzzy_sets_interpreter import parse_fuzzy_set_file, parse_rules_file
-from fuzzy_logic import forward_fuzzy_inference, find_all_suitable_pairs
+from fuzzy_logic import fuzzy_forward_inference, find_all_suitable_pairs, print_implication_matrix
 
-
-def find_duplicate(new_set, all_sets):
-    for fs in all_sets:
-        if fs.data == new_set.data:
-            return fs.name
+# поиск множества, которое это множество повторяет
+def is_repeating_set(a, sets):
+    for i in sets:
+        if i.data == a.data:
+            return i.name
     return None
 
 
 def main():
     try:
-        fuzzy_sets = parse_fuzzy_set_file("data.txt")
+        fuzzy_sets = parse_fuzzy_set_file("data2.txt")
+        print("Загруженные нечёткие множества:")
+        for fs in fuzzy_sets:
+            print(f"{fs.name} = {fs}")
+        print()
     except Exception as e:
-        print(f"Sets loading error: {e}")
+        print(f"Ошибка при загрузке множеств: {e}")
         return
 
     try:
-        rules = parse_rules_file("rules.txt")
+        rules = parse_rules_file("rules2.txt")
+        print("Загруженные правила:")
+        for left, right in rules:
+            print(f"{left} ~> {right}")
+        print()
     except Exception as e:
-        print(f"Rules loading error: {e}")
+        print(f"Ошибка при загрузке правил: {e}")
         return
 
     all_sets = fuzzy_sets.copy()
-    processed_combinations = set()
+
+    processed_combinations = []
+
+    new_sets_created = True
+
     set_number = 1
 
-    while True:
-        sets_by_name = {fs.name: fs for fs in all_sets}
-        new_sets_found = False
+    while new_sets_created:
+        new_sets_created = False
 
-        for a_name, a_prime_name in find_all_suitable_pairs(all_sets):
-            if (a_name, a_prime_name) in processed_combinations:
+        sets_by_name = {fs.name: fs for fs in all_sets}
+
+        # список пар, которые можно обработать
+        a_prime_pairs = [i for i in find_all_suitable_pairs(all_sets) if i not in processed_combinations]
+
+        for a_name, a_prime_name in a_prime_pairs:
+            combination_key = (a_name, a_prime_name)
+            if combination_key in processed_combinations:
                 continue
-            processed_combinations.add((a_name, a_prime_name))
+
+            processed_combinations.append(combination_key)
 
             for left, right in rules:
-                if left != a_name or right not in sets_by_name:
-                    continue
+                if left == a_name and right in sets_by_name:
+                    A = sets_by_name[a_name]
+                    B = sets_by_name[right]
 
-                A = sets_by_name[a_name]
-                B = sets_by_name[right]
-                A_prime = sets_by_name[a_prime_name]
+                    A_prime = sets_by_name[a_prime_name]
 
-                B_prime = forward_fuzzy_inference(A, B, A_prime, f"I{set_number}")
+                    # шаг нечёткого логического вывода
+                    new_set_name = f"I{set_number}"
+                    B_prime = fuzzy_forward_inference(A, B, A_prime, new_set_name)
 
-                print(f"{{ {A_prime.name}, {A.name} ~> {B.name}}} |~ I{set_number} = {B_prime}", end='')
+                    print(f"{{ {A_prime.name}, {A.name} ~> {B.name}}} |~ {new_set_name} = {B_prime}", end='')
 
-                duplicate_name = find_duplicate(B_prime, all_sets)
-                if duplicate_name is None:
-                    all_sets.append(B_prime)
-                    new_sets_found = True
-                else:
-                    print(f"={duplicate_name}", end='')
+                    # проверка, повторяет ли получившееся множество уже имеющееся
+                    repeats = is_repeating_set(B_prime, all_sets)
+                    if repeats is None:
+                        all_sets.append(B_prime)
+                        new_sets_created = True
+                    else:
+                        print(f"={repeats}", end='')
 
-                print()
-                set_number += 1
-
-        if not new_sets_found:
-            break
-
+                    print("")
+                    set_number += 1
+        print("="*100)
 
 if __name__ == "__main__":
     main()

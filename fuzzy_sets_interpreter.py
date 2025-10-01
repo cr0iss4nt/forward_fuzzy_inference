@@ -10,7 +10,7 @@
 
 from fuzzy_sets import *
 
-
+# преобразование строки в нечёткое множество
 def parse_fuzzy_set(input_string: str) -> FuzzySet:
     parts = input_string.split('=', 1)
     if len(parts) != 2:
@@ -53,12 +53,14 @@ def parse_fuzzy_set(input_string: str) -> FuzzySet:
 
     return FuzzySet(name, data)
 
+# парсинг нечётких множеств из файла
 def parse_fuzzy_set_file(filename) -> list[FuzzySet]:
     with open(filename) as file:
         lines = [line.rstrip() for line in file]
         sets = [parse_fuzzy_set(line) for line in lines]
         return sets
 
+# парсинг правил из файла
 def parse_rules_file(filename) -> list[tuple[str, str]]:
     tuples_list = []
 

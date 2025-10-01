@@ -13,11 +13,14 @@ class FuzzySet:
         self.name = name
         self.data = data
 
+    # строковое представление нечёткого множества
     def __str__(self):
         return '{' + ','.join([f"<{i},{j:.2f}>" for i, j in self.data.items()]) + '}'
 
+    # получить нечёткость элемента в множестве
     def get_value(self, element_name):
         return self.data[element_name]
 
+    # получить универсум множества
     def get_elements(self):
         return sorted(self.data.keys())
