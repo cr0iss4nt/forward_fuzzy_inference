@@ -1,17 +1,17 @@
-from fuzzy_sets import *
+"""
+Лабораторная работа №3 по дисциплине ЛОИС
+Выполнена студентами группы 321702 Бураком Богданом Витальевичем, Семенидо Максимом Игоревичем, Мартыненко Константином Сергеевичем
+Парсинг нечётких множеств и правил
+30.09.2025
 
-# How it's supposed to be viewed:
+Использованные материалы:
+Голенков, В. В. Логические основы интеллектуальных систем. Практикум: учеб.-метод. пособие / В. В. Голенков. — БГУИР, 2011.
 """
-A = {<a, 0.5>, <b, 1>, <c, 0>}
-B = {<e, 0.3>, <b, 0.1>, <n, 0.95>}
-"""
+
+from fuzzy_sets import *
 
 
 def parse_fuzzy_set(input_string: str) -> FuzzySet:
-    """
-    Parse a string in the format "A = {<a, 0.5>, <b, 1>, <c, 0>}" and return a FuzzySet object.
-    """
-    # Split the string to separate the name from the data part
     parts = input_string.split('=', 1)
     if len(parts) != 2:
         raise ValueError("Invalid format: expected 'name = {data}'")
@@ -20,28 +20,23 @@ def parse_fuzzy_set(input_string: str) -> FuzzySet:
 
     data_part = parts[1].strip()
     if not data_part.startswith('{') or not data_part.endswith('}'):
-        raise ValueError("Invalid format: data should be enclosed in curly braces")
+        raise ValueError("Invalid format: data must be enclosed in curly braces")
 
-    # Remove the outer curly braces
     data_content = data_part[1:-1].strip()
     if data_content == '':
         return FuzzySet(name, {})
 
-    # Parse the individual elements
     data = {}
 
-    # Split by '>, ' to separate the elements, but be careful with the last one
     elements = data_content.split('>,')
 
     for element in elements:
         element = element.strip()
-        # Remove any remaining angle brackets
         if element.startswith('<'):
             element = element[1:]
         if element.endswith('>'):
             element = element[:-1]
 
-        # Split by comma to separate the key and value
         key_value = element.split(',', 1)
         if len(key_value) != 2:
             raise ValueError(f"Invalid element format: {element}")

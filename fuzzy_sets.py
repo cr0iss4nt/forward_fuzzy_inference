@@ -1,10 +1,20 @@
+"""
+Лабораторная работа №3 по дисциплине ЛОИС
+Выполнена студентами группы 321702 Бураком Богданом Витальевичем, Семенидо Максимом Игоревичем, Мартыненко Константином Сергеевичем
+Класс нечёткого множества
+30.09.2025
+
+Использованные материалы:
+Голенков, В. В. Логические основы интеллектуальных систем. Практикум: учеб.-метод. пособие / В. В. Голенков. — БГУИР, 2011.
+"""
+
 class FuzzySet:
     def __init__(self, name: str, data: dict[str, float]):
         self.name = name
         self.data = data
 
     def __str__(self):
-        return '{' + ','.join([f"<{i},{j}>" for i, j in self.data.items()]) + '}'
+        return '{' + ','.join([f"<{i},{j:.2f}>" for i, j in self.data.items()]) + '}'
 
     def get_value(self, element_name):
         return self.data[element_name]
