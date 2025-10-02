@@ -11,6 +11,7 @@
 from fuzzy_sets_interpreter import parse_fuzzy_set_file, parse_rules_file
 from fuzzy_logic import fuzzy_forward_inference, find_all_suitable_pairs, print_implication_matrix
 
+
 # поиск множества, которое это множество повторяет
 def is_repeating_set(a, sets):
     for i in sets:
@@ -21,7 +22,7 @@ def is_repeating_set(a, sets):
 
 def main():
     try:
-        fuzzy_sets = parse_fuzzy_set_file("data2.txt")
+        fuzzy_sets = parse_fuzzy_set_file("data.txt")
         print("Загруженные нечёткие множества:")
         for fs in fuzzy_sets:
             print(f"{fs.name} = {fs}")
@@ -31,7 +32,7 @@ def main():
         return
 
     try:
-        rules = parse_rules_file("rules2.txt")
+        rules = parse_rules_file("rules.txt")
         print("Загруженные правила:")
         for left, right in rules:
             print(f"{left} ~> {right}")
@@ -47,6 +48,10 @@ def main():
     new_sets_created = True
 
     set_number = 1
+
+    sets_by_name = {fs.name: fs for fs in all_sets}
+    for i,j in rules:
+        print_implication_matrix(sets_by_name[i], sets_by_name[j])
 
     while new_sets_created:
         new_sets_created = False
@@ -86,7 +91,7 @@ def main():
 
                     print("")
                     set_number += 1
-        print("="*100)
+        #print("="*100)
 
 if __name__ == "__main__":
     main()

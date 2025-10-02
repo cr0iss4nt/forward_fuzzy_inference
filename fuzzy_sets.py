@@ -15,7 +15,7 @@ class FuzzySet:
 
     # строковое представление нечёткого множества
     def __str__(self):
-        return '{' + ','.join([f"<{i},{j:.2f}>" for i, j in self.data.items()]) + '}'
+        return '{' + ','.join([f"<{i},{j:.3f}>" for i, j in self.data.items()]) + '}'
 
     # получить нечёткость элемента в множестве
     def get_value(self, element_name):

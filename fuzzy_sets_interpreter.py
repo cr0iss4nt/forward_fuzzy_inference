@@ -49,7 +49,7 @@ def parse_fuzzy_set(input_string: str) -> FuzzySet:
         except ValueError:
             raise ValueError(f"Invalid value format: {value_str}")
 
-        data[key] = value
+        data[key] = round(value, 3)
 
     return FuzzySet(name, data)
 

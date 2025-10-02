@@ -17,16 +17,16 @@ def print_implication_matrix(A: FuzzySet, B: FuzzySet, title="Матрица и�
     y_elements = B.get_elements()
 
     corner = f"{A.name} \\ {B.name}"
-    print(f"{corner:<10}", end="")
+    print(f"{corner:<10}", end=" ")
     for y in y_elements:
-        print(f"{y:<8}", end="")
+        print(f"{y:<8}", end=" ")
     print()
 
     for x in x_elements:
-        print(f"{x:<10}", end="")
+        print(f"{x:<10}", end=" ")
         for y in y_elements:
             impl_val = implication(A.get_value(x), B.get_value(y))
-            print(f"{impl_val:<8.3f}", end="")
+            print(f"{impl_val:<8.3f}", end=" ")
         print()
     print()
 
@@ -50,10 +50,10 @@ def fuzzy_forward_inference(A: FuzzySet, B: FuzzySet, A_prime: FuzzySet, name):
         for x in x_universe:
             implication_val = implication(A.get_value(x), B.get_value(y))
             t_norm_val = t_norm(A_prime.get_value(x), implication_val)
-            supremum_candidates.append(t_norm_val)
+            supremum_candidates.append(round(t_norm_val, 3))
         B_prime_dict[y] = max(supremum_candidates) if supremum_candidates else 0.0
 
-    print_implication_matrix(A, B)
+    #print_implication_matrix(A, B)
 
     return FuzzySet(f"{name}", B_prime_dict)
 
