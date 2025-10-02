@@ -13,8 +13,7 @@ class FuzzySet:
         self.name = name
         self.data = data
 
-    # строковое представление нечёткого множества
-    def __str__(self):
+    def get_data(self):
         return '{' + ','.join([f"<{i},{j:.3f}>" for i, j in self.data.items()]) + '}'
 
     # получить нечёткость элемента в множестве
@@ -24,3 +23,7 @@ class FuzzySet:
     # получить универсум множества
     def get_elements(self):
         return sorted(self.data.keys())
+
+    # представление нечёткого множества
+    def __repr__(self):
+        return f"{self.name}={self.get_data()}"

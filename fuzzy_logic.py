@@ -53,8 +53,6 @@ def fuzzy_forward_inference(A: FuzzySet, B: FuzzySet, A_prime: FuzzySet, name):
             supremum_candidates.append(round(t_norm_val, 3))
         B_prime_dict[y] = max(supremum_candidates) if supremum_candidates else 0.0
 
-    #print_implication_matrix(A, B)
-
     return FuzzySet(f"{name}", B_prime_dict)
 
 # нахождение всех пар множеств с одинаковым универсумом

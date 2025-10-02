@@ -22,17 +22,17 @@ def is_repeating_set(a, sets):
 
 def main():
     try:
-        fuzzy_sets = parse_fuzzy_set_file("data.txt")
+        fuzzy_sets = parse_fuzzy_set_file("data2.txt")
         print("Загруженные нечёткие множества:")
         for fs in fuzzy_sets:
-            print(f"{fs.name} = {fs}")
+            print(fs)
         print()
     except Exception as e:
         print(f"Ошибка при загрузке множеств: {e}")
         return
 
     try:
-        rules = parse_rules_file("rules.txt")
+        rules = parse_rules_file("rules2.txt")
         print("Загруженные правила:")
         for left, right in rules:
             print(f"{left} ~> {right}")
@@ -49,10 +49,12 @@ def main():
 
     set_number = 1
 
+    final_sets = []
+
     sets_by_name = {fs.name: fs for fs in all_sets}
     for i,j in rules:
         print_implication_matrix(sets_by_name[i], sets_by_name[j])
-
+    print("Итерации:")
     while new_sets_created:
         new_sets_created = False
 
@@ -79,19 +81,23 @@ def main():
                     new_set_name = f"I{set_number}"
                     B_prime = fuzzy_forward_inference(A, B, A_prime, new_set_name)
 
-                    print(f"{{ {A_prime.name}, {A.name} ~> {B.name}}} |~ {new_set_name} = {B_prime}", end='')
+                    print(f"{{ {A_prime.name}, {A.name} ~> {B.name}}} |~ {new_set_name} = {B_prime.get_data()}", end='')
 
                     # проверка, повторяет ли получившееся множество уже имеющееся
                     repeats = is_repeating_set(B_prime, all_sets)
                     if repeats is None:
                         all_sets.append(B_prime)
                         new_sets_created = True
+                        final_sets.append(B_prime)
                     else:
                         print(f"={repeats}", end='')
 
                     print("")
                     set_number += 1
         #print("="*100)
+    print("\nРезультат:")
+    for i in final_sets:
+        print(i)
 
 if __name__ == "__main__":
     main()
